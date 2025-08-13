@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/app :: layout('加入者検索', ~{::content}, 'member')}" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div th:fragment="content">
+  <!--/* 加入者情報検索画面 */-->
+  <form th:action="@{/member/search}" th:object="${memberSearchCondition}" method="POST">
+    <!--/* メールアドレス */-->
+    <div class="mb-3 row">
+      <label class="col-sm-2 col-form-label" for="mail">メールアドレス</label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" th:field="*{mail}" />
+      </div>
+    </div>
+
+    <!--/* 氏名 */-->
+    <!--/* ここにテキストフォームを設置 */-->
+    <div class="mb-3 row justify-content-between">
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">検索</button>
+        <a class="btn btn-link" th:href="@{/member/add}">登録</a>
+      </div>
+    </div>
+  </form>
+</div>
+
+</html>

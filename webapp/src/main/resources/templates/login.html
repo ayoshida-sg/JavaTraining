@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/app :: layout('ログイン', ~{::content}, '')}" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!--/*
+    ログイン画面
+  */-->
+<div th:fragment="content">
+  <form th:action="@{/login}" method="POST">
+    <div th:if="${param.error}" class="alert alert-danger" role="alert">
+      ユーザ名またはパスワードが間違っています。
+    </div>
+    <div class="mb-3 row">
+      <label class="col-sm-2 col-form-label" for="username">ユーザ名</label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" name="username" />
+      </div>
+    </div>
+    <div class="mb-3 row">
+      <label class="col-sm-2 col-form-label" for="password">パスワード</label>
+      <div class="col-sm-10">
+        <input class="form-control" type="password" name="password" required />
+      </div>
+    </div>
+    <div class="mb-3 row justify-content-between">
+      <div class="col-auto">
+        <button class="btn btn-primary mb-3" type="submit">ログイン</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+</html>

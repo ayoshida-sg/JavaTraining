@@ -1,0 +1,22 @@
+{
+  "java.project.resourceFilters": [
+    "build",
+    "docs",
+    "sql",
+    "node_modules",
+    "\\.git"
+  ],
+  // "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
+  "java.format.settings.url": "extra/eclipse-custom.xml",
+  "java.format.settings.profile": "GoogleStyle",
+  "editor.formatOnSave": true,
+  "spring-boot.ls.problem.version-validation.UPDATE_LATEST_MINOR_VERSION": "IGNORE",
+  "spring-boot.ls.problem.version-validation.UPDATE_LATEST_PATCH_VERSION": "IGNORE",
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.dependency.packagePresentation": "hierarchical",
+  "gradle.nestedProjects": true,
+  "gradle.autoDetect": "off",
+  "java.import.gradle.enabled": false,
+  "java.import.gradle.wrapper.enabled": false
+}

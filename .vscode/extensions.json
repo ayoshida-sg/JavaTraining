@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "vscjava.vscode-gradle",
+        "ms-ceintl.vscode-language-pack-ja",
+        "vscjava.vscode-spring-boot-dashboard",
+        "vscjava.vscode-spring-initializr",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-java-debug",
+        "mhutchie.git-graph"
+    ]
+}

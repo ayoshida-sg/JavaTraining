@@ -1,0 +1,21 @@
+site_name: Java Training
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.expand
+  font:
+    text: Noto Sans JP
+  language: ja
+
+plugins:
+  - search:
+      lang: ja
+
+markdown_extensions:
+  - admonition
+  - def_list
+  - tables
+  - toc:
+      permalink: true

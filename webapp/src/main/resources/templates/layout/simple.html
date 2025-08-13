@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html th:fragment="layout(title, content, usefunction)" lang="ja" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/header :: common_header(${title})}">
+</head>
+
+<body>
+    <div class="container">
+        <main>
+            <div th:insert="${content}" class="inner">
+                <!--/* 
+                    アプリケーション領域
+                    このレイアウトの呼出元画面がここに埋め込まれます。
+                */-->
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
