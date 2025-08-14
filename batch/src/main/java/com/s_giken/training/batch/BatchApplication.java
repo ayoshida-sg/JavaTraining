@@ -44,15 +44,6 @@ public class BatchApplication implements CommandLineRunner {
 		// - データを加工する
 		// - 加工したデータをデータベースに登録する
 
-		// ダミーコード
-		// 削除してください。
-		Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM T_MEMBER", Integer.class);
-		if (count != null) {
-			logger.info("加入者数:" + count.toString());
-		} else {
-			logger.error("加入者数を取得できませんでした。");
-		}
-		// ダミーコードここまで
 
 		logger.info("-".repeat(40));
 	}
