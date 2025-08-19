@@ -11,6 +11,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @SpringBootApplication
 public class BatchApplication implements CommandLineRunner {
@@ -45,6 +47,7 @@ public class BatchApplication implements CommandLineRunner {
 		logger.info("-".repeat(40));
 		
 		
+		
 		if (args.length != 1) {
 			throw new IllegalArgumentException("コマンドライン引数が不正です。対象年月を1つだけ指定してください。");
 		}
@@ -66,6 +69,15 @@ public class BatchApplication implements CommandLineRunner {
 		// - データを加工する
 		// - 加工したデータをデータベースに登録する
 
+	
+	@Transactional
+	public void T_BILLING_STATUS (String billing_ym) {
+		boolean exists = existsBybilling_ymAndis_commited (billing_ym , true);
+		
+	
+		
+				
+	
 
 		logger.info("-".repeat(40));
 	}
