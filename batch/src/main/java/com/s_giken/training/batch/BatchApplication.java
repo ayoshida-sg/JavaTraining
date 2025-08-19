@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -70,13 +71,50 @@ public class BatchApplication implements CommandLineRunner {
 		// - 加工したデータをデータベースに登録する
 
 	
-	@Transactional
-	public void T_BILLING_STATUS (String billing_ym) {
-		boolean exists = existsBybilling_ymAndis_commited (billing_ym , true);
+	@Service
+	public class BillingService {
+		public final BillingStatusRepository billingStatusRepository;
+		public final BillingDateRepository billingDateRepository;
+		public final BillingDetailDateRepository billingDetailDateRepository;
 		
+		public BillingService(
+			BillingStatusRepository billingStatusRepository,
+			BillingDateRepository billingDateRepository,
+			BillingDetailDateRepository billingDetailDateRepository
+		) {
+			this.billingStatusRepository = billingStatusRepository;
+			this.billingDateRepository = billingDateRepository;
+			this.billingDetailDateRepositor = billingDetailDateRepositor;
+		}
+		
+		
+		
+		
+		@Transactional
+		public void billingStatusRepository (String billingYm) {
+			boolean exists = billingStatusRepository.existsByBillingYmAndIsCommited (billingYm , true);
+			 void deleteByBillingYm(String billingYm);
+			
+			if (exists) {
+				throw new IllegalArgumentException("既に請求データは確定済みなため処理を中断します。");
+			}
+			
+			//対象年月に一致するレコードの削除
+			billingStatusRepository.deletebilling_ym(billing_ym);
+			billingDateRepository.deletebilling_ym(billing_ym);
+			billingDetailDateRepository.deletebilling_ym(billing_ym);
+			
+			//「請求データ状況」テーブルにレコードの追加
+			billingStatus newStatus = new billingStatus();
+			newStatus.setbilling_ym(billing_ym);
+			newStatus.setis_commited(false);
+			billingStatus updated = billingStatusRepository.save(newStatus);
+			
+		}
+
 	
-		
-				
+	
+
 	
 
 		logger.info("-".repeat(40));
