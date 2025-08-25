@@ -66,11 +66,8 @@ public class BatchApplication implements CommandLineRunner {
 		}
 
 		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy年MM月");
-		String billingYmStrJp = targetDate.format(jpFormatter);
 
 		logger.info("対象年月:{}", targetDate.format(jpFormatter));
-
-		logger.info("{}分の請求書を確認しています。", billingYmStrJp);
 
 		billingService.processBillingData(targetDate);
 	}
@@ -100,6 +97,7 @@ class BillingService {
 	public void processBillingData(LocalDate targetDate) {
 		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy年MM月");
 		String billingYmStrJp = targetDate.format(jpFormatter);
+		logger.info("{}分の請求書を確認しています。", billingYmStrJp);
 
 		java.sql.Date sqlDate = java.sql.Date.valueOf(targetDate);
 
