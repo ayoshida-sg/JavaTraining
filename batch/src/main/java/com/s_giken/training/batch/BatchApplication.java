@@ -135,7 +135,7 @@ class BillingService {
 					  payment_method, amount, tax_ratio, total
 					)
 					SELECT
-					  :billing_ym AS billing,
+					  :billing_ym AS billing_ym,
 					  m.member_id,
 					  m.mail,
 					  m.name,
