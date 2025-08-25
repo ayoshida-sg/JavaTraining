@@ -15,14 +15,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @SpringBootApplication
 public class BatchApplication implements CommandLineRunner {
 	private static final String[] args = null;
 	private final Logger logger = LoggerFactory.getLogger(BatchApplication.class);
 	private final JdbcTemplate jdbcTemplate;
 	private final BillingService billingService;
-	
+
 	/**
 	 * SpringBoot エントリポイント
 	 * 
@@ -37,7 +36,7 @@ public class BatchApplication implements CommandLineRunner {
 	 * 
 	 * @param jdbcTemplate SpringBootから注入される JdbcTemplate オブジェクト
 	 */
-	public BatchApplication(JdbcTemplate jdbcTemplate,BillingService billingService) {
+	public BatchApplication(JdbcTemplate jdbcTemplate, BillingService billingService) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.billingService = billingService;
 	}
@@ -50,15 +49,14 @@ public class BatchApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		logger.info("-".repeat(40));
-	
-		
+
 		if (args.length != 1) {
 			throw new IllegalArgumentException("コマンドライン引数が不正です。対象年月を1つだけ指定してください。");
 		}
-			
+
 		String input = args[0];
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
-		
+
 		LocalDate targetDate;
 		try {
 			YearMonth billingYm = YearMonth.parse(input, formatter);
@@ -66,24 +64,28 @@ public class BatchApplication implements CommandLineRunner {
 		} catch (DateTimeParseException e) {
 			throw new IllegalArgumentException("コマンドライン引数の書式が不正です。対象年月はyyyyMM形式で指定してください。");
 		}
-		
-		logger.info("対象年月:{}", targetDate);
-		
+
+		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy年MM月");
+		String billingYmStrJp = targetDate.format(jpFormatter);
+
+		logger.info("対象年月:{}", targetDate.format(jpFormatter));
+
+		logger.info("{}分の請求書を確認しています。", billingYmStrJp);
+
 		billingService.processBillingData(targetDate);
 	}
 
-}	
-		
-    	// TODO: ここにバッチ処理のコードを記述する
-		// - データベースからデータを取得する
-		// - データを加工する
-		// - 加工したデータをデータベースに登録する
+}
+
+// TODO: ここにバッチ処理のコードを記述する
+// - データベースからデータを取得する
+// - データを加工する
+// - 加工したデータをデータベースに登録する
 
 @Service
 class BillingService {
-	
-	private static final Logger logger = LoggerFactory.getLogger(BillingService.class);
 
+	private static final Logger logger = LoggerFactory.getLogger(BillingService.class);
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -91,13 +93,18 @@ class BillingService {
 	/**
 	 * 請求データ処理
 	 * 
-	 * @param targetDate 対象年月(YearMonth型)
+	 * @param targetDate 対象年月の初日(LocalDate型)
 	 */
 
 	@Transactional
 	public void processBillingData(LocalDate targetDate) {
+		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy年MM月");
+		String billingYmStrJp = targetDate.format(jpFormatter);
+
+		java.sql.Date sqlDate = java.sql.Date.valueOf(targetDate);
+
 		String sql = "SELECT COUNT(*) FROM T_BILLING_STATUS WHERE billing_ym = ? AND is_commit = TRUE";
-		Integer count = jdbcTemplate.queryForObject(sql, Integer.class, targetDate);
+		Integer count = jdbcTemplate.queryForObject(sql, Integer.class, sqlDate);
 
 		if (count != null && count > 0) {
 			throw new IllegalArgumentException("既に請求データは確定済みなため処理を中断します。");
@@ -108,20 +115,18 @@ class BillingService {
 		String deleteDataSql = "DELETE FROM T_BILLING_DATA WHERE billing_ym = ?";
 		String deleteStatusSql = "DELETE FROM T_BILLING_STATUS WHERE billing_ym = ?";
 
-		jdbcTemplate.update(deleteDetailDataSql, targetDate);
-		jdbcTemplate.update(deleteDataSql, targetDate);
-		jdbcTemplate.update(deleteStatusSql, targetDate);
+		jdbcTemplate.update(deleteDetailDataSql, sqlDate);
+		jdbcTemplate.update(deleteDataSql, sqlDate);
+		jdbcTemplate.update(deleteStatusSql, sqlDate);
+
+		logger.info("データベースから{}分の未確定請求情報を削除しました。", billingYmStrJp);
 
 		//「請求データ状況」テーブルにレコードの追加
 		String insertStatusSql = "INSERT INTO T_BILLING_STATUS (billing_ym, is_commit) VALUES (?, FALSE)";
-		int insertedStatus = jdbcTemplate.update(insertStatusSql, targetDate);
+		int insertedStatus = jdbcTemplate.update(insertStatusSql, sqlDate);
 
-
-		String billingYmStr = targetDate.format(DateTimeFormatter.ofPattern("yyyyMM"));
-		LocalDate startOfMonth = targetDate;
-		String startOfMonthStr = startOfMonth.toString();
-		LocalDate endOfMonth = targetDate.withDayOfMonth(targetDate.lengthOfMonth());
-		String endOfMonthStr = endOfMonth.toString();
+		logger.info("{}分の請求ステータス情報を追加しています。", billingYmStrJp);
+		logger.info("{}件追加しました。", insertedStatus);
 
 		//「請求データ」テーブルの追加
 		String insertBillingDataSql = """
@@ -158,12 +163,18 @@ class BillingService {
 					  m.payment_method
 				""";
 
+		String billingYmStr = targetDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		String startOfMonthStr = targetDate.withDayOfMonth(1).format(DateTimeFormatter.ISO_DATE);
+		String endOfMonthStr = targetDate.withDayOfMonth(targetDate.lengthOfMonth()).format(DateTimeFormatter.ISO_DATE);
+
 		String replacedBillingDataSql = insertBillingDataSql
 				.replace(":billing_ym", "'" + billingYmStr + "'")
-				.replace(":start_of_month", "'" + startOfMonthStr + "'") 
+				.replace(":start_of_month", "'" + startOfMonthStr + "'")
 				.replace(":end_of_month", "'" + endOfMonthStr + "'");
 		int insertedBilling = jdbcTemplate.update(replacedBillingDataSql);
 
+		logger.info("{}分の請求データ情報を追加しています。", billingYmStrJp);
+		logger.info("{}件追加しました。", insertedBilling);
 
 		//「請求明細データ」テーブルの追加
 		String insertBillingDetailSql = """
@@ -188,37 +199,16 @@ class BillingService {
 						  AND (c.end_date IS NULL OR c.end_date >= :start_of_month)
 				""";
 		String replacedBillingDetailSql = insertBillingDetailSql
-				.replace(":billing_ym", "'" + billingYmStr + "'") 
-				.replace(":start_of_month", "'" + startOfMonthStr + "'") 
+				.replace(":billing_ym", "'" + billingYmStr + "'")
+				.replace(":start_of_month", "'" + startOfMonthStr + "'")
 				.replace(":end_of_month", "'" + endOfMonthStr + "'");
 		int insertedDetail = jdbcTemplate.update(replacedBillingDetailSql);
 
-		
-			
-			
-			//ログ出力
-			logger.info("-".repeat(40));
-			logger.info("{}分の請求書を確認しています。", billingYmStr);
-			
-			logger.info("データベースから{}分の未確定請求情報を削除しました。", billingYmStr);
-			
-			logger.info("{}分の請求ステータス情報を追加しています。", billingYmStr);
-			logger.info("{}件追加しました。", insertedStatus);
-			
-			logger.info("{}分の請求データ情報を追加しています。", billingYmStr);
-			logger.info("{}件追加しました。", insertedBilling);
-			
-			logger.info("{}分の請求明細データ情報を追加しています。", billingYmStr);
-			logger.info("{}件追加しました。", insertedDetail);
-			
-			logger.info("-".repeat(40));
-			
-		
-		
-		
+		logger.info("{}分の請求明細データ情報を追加しています。", billingYmStrJp);
+		logger.info("{}件追加しました。", insertedDetail);
+
+		logger.info("-".repeat(40));
+
 	}
 
 }
-
-
-
