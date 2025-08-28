@@ -62,7 +62,8 @@ public class BatchApplication implements CommandLineRunner {
 			YearMonth billingYm = YearMonth.parse(input, formatter);
 			targetDate = billingYm.atDay(1);
 		} catch (DateTimeParseException e) {
-			throw new IllegalArgumentException("コマンドライン引数の書式が不正です。対象年月はyyyyMM形式で指定してください。");
+			logger.info("コマンドライン引数の書式が不正です。対象年月はyyyyMM形式で指定してください。");
+			return;
 		}
 
 		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy年MM月");
@@ -105,7 +106,8 @@ class BillingService {
 		Integer count = jdbcTemplate.queryForObject(sql, Integer.class, sqlDate);
 
 		if (count != null && count > 0) {
-			throw new IllegalArgumentException("既に請求データは確定済みなため処理を中断します。");
+			logger.info("既に請求データは確定済みなため処理を中断します。");
+			return;
 		}
 
 		//対象年月に一致するレコードの削除
