@@ -40,12 +40,9 @@
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
             <!--/* ログアウトリンク */-->
-            <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;" 
-               class="btn btn-dark text-white" 
-               sec:authorize="isAuthenticated()">
+            <a href="/logout" class="btn btn-dark text-white" sec:authorize="isAuthenticated()">
                ログアウト
            </a>
-            <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;"></form>
           </li>
         </ul>
       </div>
