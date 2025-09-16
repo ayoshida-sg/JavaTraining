@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .failureUrl("/login?error")
                         .permitAll())
                 .logout((logout) -> logout
-                        .logoutSuccessUrl("/"))
+                        .logoutSuccessUrl("/login"))
                 .authorizeHttpRequests((authorize) -> authorize
                         // 特例として認証を無視するURL
                         .requestMatchers(

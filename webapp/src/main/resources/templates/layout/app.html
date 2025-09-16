@@ -37,9 +37,12 @@
           </ul>
         </div>
         <!--/* ナビバー - 右端*/-->
-        <ul class="navbar-nav">
+        <ul class="navbar-nav ms-auto">
           <li class="nav-item">
             <!--/* ログアウトリンク */-->
+            <form th:action="@{/logout}" method="post" class="d-inline" sec:authorize="isAuthenticated()">
+                <button type="submit" class="btn btn-dark text-white">ログアウト</button>
+            </form>
           </li>
         </ul>
       </div>
