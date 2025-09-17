@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
 import com.s_giken.training.webapp.model.entity.Member;
 
 @Repository
@@ -55,6 +56,20 @@ public class MemberRepositoryImpl implements MemberRepository {
     public List<Member> findByMailLike(String mail) {
         String sql = "SELECT * FROM T_MEMBER WHERE mail like ?";
         Object[] args = { mail };
+        int[] argTypes = { Types.VARCHAR };
+        List<Member> result = jdbcTemplate.query(sql, args, argTypes, rowMapper);
+        return result;
+    }
+    
+    /**
+     * 名前の一部にマッチするの加入者情報リストを取得する。
+     * 
+     * @return Optional型の Memberオブジェクト
+     */
+    @Override
+    public List<Member> findByNameLike(String name) {
+        String sql = "SELECT * FROM T_MEMBER WHERE name like ?";
+        Object[] args = { name };
         int[] argTypes = { Types.VARCHAR };
         List<Member> result = jdbcTemplate.query(sql, args, argTypes, rowMapper);
         return result;

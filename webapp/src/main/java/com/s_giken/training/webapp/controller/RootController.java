@@ -1,8 +1,8 @@
 package com.s_giken.training.webapp.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.stereotype.Controller;
 
 /**
  * ルートパスのコントローラークラス
@@ -15,7 +15,7 @@ public class RootController {
 	 * 
 	 * @return トップ画面のテンプレート名
 	 */
-	@GetMapping("/")
+	@GetMapping("/top")
 	public String hello() {
 		return "top";
 	}

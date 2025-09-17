@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class MemberSearchCondition {
     // メールアドレス検索用
     private String mail;
-    // TODO: 氏名検索用メンバ変数を用意
+    // 名前検索用
+    private String name;
 }
