@@ -37,6 +37,6 @@ public class RootController {
 	 */
 	@GetMapping("/")
 	public String top() {
-		return "redirect top";
+		return "redirect:/top";
 	}
 }
