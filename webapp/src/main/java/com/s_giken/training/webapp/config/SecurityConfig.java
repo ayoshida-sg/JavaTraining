@@ -52,8 +52,14 @@ public class SecurityConfig {
                                         .matcher("/image/**"),
                                 PathPatternRequestMatcher
                                         .withDefaults()
-                                        .matcher("/css/**"))
-                        .permitAll()
+                                        .matcher("/css/**"),
+                                PathPatternRequestMatcher
+                                        .withDefaults()
+                                        .matcher("/top/**"),
+                                PathPatternRequestMatcher
+                                        .withDefaults()
+                                        .matcher("/login/**"))
+                       .permitAll()
                         // 特例以外のURLは要認証
                         .anyRequest().authenticated());
 

@@ -76,6 +76,20 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     /**
+     * 加入者情報リストの全レコードを取得する。
+     * 
+     * @return Optional型の Memberオブジェクト
+     */
+	@Override
+	public List<Member> findByMailContainingAndNameContaining(String mail, String name) {
+		String sql = "SELECT * FROM T_MEMBER WHERE mail like ? AND name like ?";
+		Object[] args = { mail, name };
+		int[] argTypes = { Types.VARCHAR, Types.VARCHAR };
+	    List<Member> result = jdbcTemplate.query(sql, args, argTypes, rowMapper);
+	    return result;
+	}
+
+   /**
      * 加入者情報をデータベースへ登録する。
      * 
      * @param member 追加するMemberオブジェクト。 memberIdプロパティの値は null としなくてはならない
@@ -154,3 +168,5 @@ public class MemberRepositoryImpl implements MemberRepository {
         return processed_count;
     }
 }
+
+

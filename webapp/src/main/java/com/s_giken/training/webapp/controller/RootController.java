@@ -29,4 +29,14 @@ public class RootController {
 	public String login() {
 		return "login";
 	}
+	
+	/**
+	 * トップ画面を表示する
+	 * 
+	 * @return トップ画面のテンプレート名
+	 */
+	@GetMapping("/")
+	public String top() {
+		return "top";
+	}
 }

@@ -33,6 +33,13 @@ public interface MemberRepository {
      * @return Optional型の Memberオブジェクト
      */
     public List<Member> findByNameLike(String name);
+    
+    /**
+     * 加入者情報リストの全レコードを取得する。
+     * 
+     * @return Optional型の Memberオブジェクト
+     */
+    public List<Member> findByMailContainingAndNameContaining( String mail, String name);
 
     /**
      * 加入者情報をデータベースへ登録する。
