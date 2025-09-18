@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .headers((header) -> header
                         .frameOptions((frame) -> frame.disable()))
                 .formLogin((form) -> form
-                        .defaultSuccessUrl("/")
+                        .defaultSuccessUrl("/top")
                         .loginProcessingUrl("/login")
                         .loginPage("/login")
                         .failureUrl("/login?error")
@@ -52,13 +52,7 @@ public class SecurityConfig {
                                         .matcher("/image/**"),
                                 PathPatternRequestMatcher
                                         .withDefaults()
-                                        .matcher("/css/**"),
-                                PathPatternRequestMatcher
-                                        .withDefaults()
-                                        .matcher("/top/**"),
-                                PathPatternRequestMatcher
-                                        .withDefaults()
-                                        .matcher("/login/**"))
+                                        .matcher("/css/**"))
                        .permitAll()
                         // 特例以外のURLは要認証
                         .anyRequest().authenticated());
